@@ -117,7 +117,6 @@ function drawGauge(svg,opt) {
             counter++;
         }
 
-
     //Calculate major tick mark label text
     counter=0;
     var tickLabelText=[];
@@ -127,17 +126,6 @@ function drawGauge(svg,opt) {
             tickLabelText.push(opt.minVal + (opt.tickSpaceMajVal * counter));
             counter++;
         }
-
-    //Add the svg content holder to the visualisation box element in the document (vizbox)
-    var svgWidth=opt.gaugeRadius * 2,
-        svgHeight=opt.gaugeRadius * 2;
-
-    //var svg = d3.select("#" + opt.divID)
-    //    .append("svg")
-    //    .attr("id", "SVGbox-" + opt.divID)
-    //    .attr("width", svgWidth)
-    //    .attr("height", svgHeight)
-    //    .attr({'xmlns': 'http://www.w3.org/2000/svg','xmlns:xlink': 'http://www.w3.org/1999/xlink'});
 
     //Draw the circles that make up the edge of the gauge
     var circleGroup = svg.append("svg:g")

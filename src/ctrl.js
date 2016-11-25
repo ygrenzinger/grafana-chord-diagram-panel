@@ -100,13 +100,13 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
       valueRounded: 0
     };
     this.series = [];
-    console.log("D3GaugePanelCtrl constructor!");
+    // console.log("D3GaugePanelCtrl constructor!");
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     this.events.on('render', this.onRender.bind(this));
     this.events.on('data-received', this.onDataReceived.bind(this));
     this.events.on('data-error', this.onDataError.bind(this));
     this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
-    console.log("D3GaugePanelCtrl constructor done!");
+    // console.log("D3GaugePanelCtrl constructor done!");
   }
 
   onInitEditMode() {
@@ -149,7 +149,7 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
     // panel can have a fixed height via options
     var tmpPanelHeight = this.$scope.ctrl.panel.height;
     // if that is blank, try to get it from our row
-    if (typeof tmpPanelHeight === 'undefined') {
+    if ((typeof tmpPanelHeight === 'undefined') || (tmpPanelHeight === "")) {
       // get from the row instead
       tmpPanelHeight = this.row.height;
       // default to 250px if that was undefined also
@@ -161,7 +161,7 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
     tmpPanelHeight = tmpPanelHeight.replace("px","");
     var actualHeight = parseInt(tmpPanelHeight);
     // grafana minimum height for a panel is 250px
-    if (actualHeight < 250) {
+    if (actualHeight <= 275) {
       actualHeight = 250;
     }
     return actualHeight;
@@ -180,16 +180,17 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
     this.panelWidth = this.getPanelWidth();
     this.panelHeight = this.getPanelHeight();
 
-    var margin = {top: 10, right: 0, bottom: 30, left: 0};
+    var margin = {top: 0, right: 0, bottom: 0, left: 10};
     var width = this.panelWidth;
-    var height = this.panelHeight;
+    var height = this.panelHeight; // panel title takes up this much
+    console.log("onRender: panel height: " + this.panelHeight);
+    console.log("onRender: panel width: " + this.panelWidth);
 
     var svg = d3.select(this.panelContainer[0])
       .append("svg")
       .attr("width", width + "px")
-      .attr("height", (height + 24) + "px")
+      .attr("height", this.panelHeight + "px")
       .attr("id", this.panel.gaugeDivId)
-      .classed("svg-content-responsive", true)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -197,19 +198,24 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
     var tmpGaugeRadius = parseFloat(this.panel.gauge.gaugeRadius);
     // autosize if radius is set to zero
     if (this.panel.gauge.gaugeRadius === 0) {
-      tmpGaugeRadius = this.panelHeight / 2;
-      if (this.panelWidth < this.panelHeight) {
+      tmpGaugeRadius = height / 2;
+      if (this.panelWidth < height) {
         tmpGaugeRadius = this.panelWidth / 2;
       }
-      tmpGaugeRadius -= 10;
+      console.log("onRender: auto gaugeRadius: " + tmpGaugeRadius);
     }
+
+    this.panel.gauge.gaugeRadius = tmpGaugeRadius;
+
+    console.log("onRender: gaugeRadius: " + tmpGaugeRadius);
+
     var opt = {
       minVal : this.panel.gauge.minValue,
       maxVal : this.panel.gauge.maxValue,
       tickSpaceMinVal: this.panel.gauge.tickSpaceMinVal,
       tickSpaceMajVal: this.panel.gauge.tickSpaceMajVal,
       gaugeUnits: this.panel.gauge.gaugeUnits,
-      gaugeRadius: tmpGaugeRadius,
+      gaugeRadius: this.panel.gauge.gaugeRadius,
       pivotRadius: this.panel.gauge.pivotRadius,
       padding: this.panel.gauge.padding,
       edgeWidth: this.panel.gauge.edgeWidth,
@@ -274,7 +280,7 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
 
 
   link(scope, elem, attrs, ctrl) {
-    console.log("d3gauge inside link");
+    // console.log("d3gauge inside link");
     ctrl.setContainer(elem.find('.grafana-d3-gauge'));
     // Check if there is a gauge rendered
     var renderedSVG = $('#'+this.panel.gaugeDivId);
@@ -429,9 +435,9 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
     var data = {};
     this.setValues(data);
     this.data = data;
-    console.log("Data value: " + data.value + " formatted: " + data.valueFormatted + " rounded: " + data.valueRounded );
-    //var fmtTxt = kbn.valueFormats[this.panel.format];
-    //console.log("Format: " + fmtTxt);
+    // console.log("Data value: " + data.value + " formatted: " + data.valueFormatted + " rounded: " + data.valueRounded );
+    // var fmtTxt = kbn.valueFormats[this.panel.format];
+    // console.log("Format: " + fmtTxt);
     this.gaugeObject.updateGauge(data.value, data.valueFormatted, data.valueRounded);
   }
 
