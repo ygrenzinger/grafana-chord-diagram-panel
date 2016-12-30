@@ -1,1 +1,1 @@
-{"version":3,"sources":["../src/module.js"],"names":["D3GaugePanelCtrl"],"mappings":";;;;;;;;AAAQA,sB,SAAAA,gB;;;2BAGNA,gB","file":"module.js","sourcesContent":["import {D3GaugePanelCtrl} from  './ctrl';\n\nexport {\n  D3GaugePanelCtrl as PanelCtrl\n};\n"]}
+{"version":3,"sources":["../src/module.js"],"names":["D3ChordDiagramPanelCtrl"],"mappings":";;;;;;;;AAAQA,6B,SAAAA,uB;;;2BAGNA,uB","file":"module.js","sourcesContent":["import {D3ChordDiagramPanelCtrl} from  './ctrl';\n\nexport {\n  D3ChordDiagramPanelCtrl as PanelCtrl\n};\n"]}

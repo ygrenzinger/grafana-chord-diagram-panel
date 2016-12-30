@@ -40,7 +40,7 @@ module.exports = function(grunt) {
       bower_libs: {
         cwd: 'bower_components',
         expand: true,
-        src: ['d3', 'font-awesome'],
+        src: ['d3', 'font-awesome', 'd3-queue'],
         dest: 'dist/libs/'
       },
       pluginDef: {

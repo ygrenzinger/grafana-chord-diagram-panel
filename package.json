@@ -1,20 +1,20 @@
 {
-  "name": "briangann-gauge-panel",
+  "name": "d3-chord-diagram-panel",
   "private": true,
   "version": "0.0.2",
-  "description": "Grafana D3 Gauge Panel",
+  "description": "Grafana D3 Chord Diagram Panel",
   "main": "module.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/briangann/grafana-gauge-panel.git"
+    "url": "git+https://github.com/ygrenzinger/grafana-chord-diagram-panel.git"
   },
-  "author": "Brian Gann",
+  "author": "Yannick Grenzinger & Mathieu Breton",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/briangann/grafana-gauge-panel/issues"
+    "url": "https://github.com/ygrenzinger/grafana-chord-diagram-panel/issues"
   },
   "devDependencies": {
     "babel": "~6.5.1",

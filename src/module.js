@@ -1,5 +1,5 @@
-import {D3GaugePanelCtrl} from  './ctrl';
+import {D3ChordDiagramPanelCtrl} from  './ctrl';
 
 export {
-  D3GaugePanelCtrl as PanelCtrl
+  D3ChordDiagramPanelCtrl as PanelCtrl
 };

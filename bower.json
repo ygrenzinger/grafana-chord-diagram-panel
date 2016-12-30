@@ -1,13 +1,14 @@
 {
-  "name": "briangann-gauge-panel",
-  "description": "D3-based gauge panel for Grafana",
+  "name": "d3-chord-diagram-panel",
+  "description": "D3-based chord diagram panel for Grafana",
   "main": "",
   "authors": [
-    "Brian Gann <bkgann@gmail.com>"
+    "Yannick Grenzinger <yannick.grenzinger@gmail.com>",
+    "Mathieu Breton <>"
   ],
   "license": "MIT",
   "keywords": [
-    "grafana3 d3 d3js"
+    "grafana3 d3 d3js chord diagram"
   ],
   "homepage": "https://github.com/briangann/grafana-gauge-panel",
   "private": true,
@@ -21,6 +22,7 @@
   "dependencies": {
     "d3": "^4.2.2",
     "lodash": "^4.15.0",
-    "font-awesome": "^4.6.3"
+    "font-awesome": "^4.6.3",
+    "d3-queue": "^3.0.3"
   }
 }

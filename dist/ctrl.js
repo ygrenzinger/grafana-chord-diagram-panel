@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'app/core/config', 'app/core/time_series2', './external/d3.v3.min', './css/panel.css!', './external/d3gauge'], function (_export, _context) {
+System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'app/core/config', 'app/core/time_series2', './external/d3.v3.min', './css/panel.css!', './external/d3gauge', './external/d3-queue.min', './d3_chorddiagram'], function (_export, _context) {
   "use strict";
 
-  var MetricsPanelCtrl, _, $, kbn, config, TimeSeries, d3, _createClass, panelDefaults, D3GaugePanelCtrl;
+  var MetricsPanelCtrl, _, $, kbn, config, TimeSeries, d3, renderChordDiagram, _createClass, panelDefaults, D3ChordDiagramPanelCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -59,7 +59,9 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
       TimeSeries = _appCoreTime_series.default;
     }, function (_externalD3V3Min) {
       d3 = _externalD3V3Min;
-    }, function (_cssPanelCss) {}, function (_externalD3gauge) {}],
+    }, function (_cssPanelCss) {}, function (_externalD3gauge) {}, function (_externalD3QueueMin) {}, function (_d3_chorddiagram) {
+      renderChordDiagram = _d3_chorddiagram.default;
+    }],
     execute: function () {
       _createClass = function () {
         function defineProperties(target, props) {
@@ -137,17 +139,17 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
         }
       };
 
-      _export('MetricsPanelCtrl', _export('D3GaugePanelCtrl', D3GaugePanelCtrl = function (_MetricsPanelCtrl) {
-        _inherits(D3GaugePanelCtrl, _MetricsPanelCtrl);
+      _export('MetricsPanelCtrl', _export('D3ChordDiagramPanelCtrl', D3ChordDiagramPanelCtrl = function (_MetricsPanelCtrl) {
+        _inherits(D3ChordDiagramPanelCtrl, _MetricsPanelCtrl);
 
-        function D3GaugePanelCtrl($scope, $injector, alertSrv) {
-          _classCallCheck(this, D3GaugePanelCtrl);
+        function D3ChordDiagramPanelCtrl($scope, $injector, alertSrv) {
+          _classCallCheck(this, D3ChordDiagramPanelCtrl);
 
-          var _this = _possibleConstructorReturn(this, (D3GaugePanelCtrl.__proto__ || Object.getPrototypeOf(D3GaugePanelCtrl)).call(this, $scope, $injector));
+          var _this = _possibleConstructorReturn(this, (D3ChordDiagramPanelCtrl.__proto__ || Object.getPrototypeOf(D3ChordDiagramPanelCtrl)).call(this, $scope, $injector));
 
           // merge existing settings with our defaults
           _.defaults(_this.panel, panelDefaults);
-          _this.panel.gaugeDivId = 'd3gauge_svg_' + _this.panel.id;
+          _this.panel.gaugeDivId = 'd3_chord_diagram_svg_' + _this.panel.id;
           _this.scoperef = $scope;
           _this.alertSrvRef = alertSrv;
           _this.initialized = false;
@@ -172,7 +174,7 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
           return _this;
         }
 
-        _createClass(D3GaugePanelCtrl, [{
+        _createClass(D3ChordDiagramPanelCtrl, [{
           key: 'onInitEditMode',
           value: function onInitEditMode() {
             // determine the path to this plugin
@@ -182,12 +184,6 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
             // add the relative path to the partial
             var optionsPath = thisPanelPath + 'partials/editor.options.html';
             this.addEditorTab('Options', optionsPath, 2);
-            var radialMetricsPath = thisPanelPath + 'partials/editor.radialmetrics.html';
-            this.addEditorTab('Radial Metrics', radialMetricsPath, 3);
-            var thresholdingPath = thisPanelPath + 'partials/editor.thresholding.html';
-            this.addEditorTab('Thresholding', thresholdingPath, 4);
-            var mappingsPath = thisPanelPath + 'partials/editor.mappings.html';
-            this.addEditorTab('Value Mappings', mappingsPath, 5);
           }
         }, {
           key: 'setContainer',
@@ -322,25 +318,35 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
             };
             this.gaugeObject = new drawGauge(svg, opt);
             this.svg = svg;
+            renderChordDiagram(this.panelContainer[0]);
           }
         }, {
           key: 'removeValueMap',
           value: function removeValueMap(map) {
+            console.log("removeValueMap: " + JSON.stringify(map));
+            /*
             var index = _.indexOf(this.panel.valueMaps, map);
             this.panel.valueMaps.splice(index, 1);
             this.render();
+            */
           }
         }, {
           key: 'addValueMap',
           value: function addValueMap() {
-            this.panel.valueMaps.push({ value: '', op: '=', text: '' });
+            console.log("addValueMap");
+            /*
+            this.panel.valueMaps.push({value: '', op: '=', text: '' });
+            */
           }
         }, {
           key: 'removeRangeMap',
           value: function removeRangeMap(rangeMap) {
+            console.log("removeRangeMap: " + JSON.stringify(rangeMap));
+            /*
             var index = _.indexOf(this.panel.rangeMaps, rangeMap);
             this.panel.rangeMaps.splice(index, 1);
             this.render();
+            */
           }
         }, {
           key: 'addRangeMap',
@@ -372,7 +378,7 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
           key: 'link',
           value: function link(scope, elem, attrs, ctrl) {
             //console.log("d3gauge inside link");
-            ctrl.setContainer(elem.find('.grafana-d3-gauge'));
+            ctrl.setContainer(elem.find('.grafana-d3-chord-diagram'));
             // Check if there is a gauge rendered
             var renderedSVG = $('#' + this.panel.gaugeDivId);
             // console.log("link: found svg length " + renderedSVG.length);
@@ -562,14 +568,14 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
           }
         }]);
 
-        return D3GaugePanelCtrl;
+        return D3ChordDiagramPanelCtrl;
       }(MetricsPanelCtrl)));
 
-      D3GaugePanelCtrl.templateUrl = 'partials/template.html';
+      D3ChordDiagramPanelCtrl.templateUrl = 'partials/template.html';
 
-      _export('D3GaugePanelCtrl', D3GaugePanelCtrl);
+      _export('D3ChordDiagramPanelCtrl', D3ChordDiagramPanelCtrl);
 
-      _export('MetricsPanelCtrl', D3GaugePanelCtrl);
+      _export('MetricsPanelCtrl', D3ChordDiagramPanelCtrl);
     }
   };
 });

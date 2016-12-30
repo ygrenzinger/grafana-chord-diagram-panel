@@ -1,12 +1,12 @@
 {
     "type": "panel",
-    "name": "D3 Gauge",
-    "id": "briangann-gauge-panel",
+    "name": "D3 Chord Diagram",
+    "id": "d3-chord-diagram-panel",
     "info": {
-        "description": "D3-based Gauge panel for Grafana",
+        "description": "D3-based Chord Diagram panel for Grafana",
         "author": {
-            "name": "Brian Gann (bkgann@gmail.com)",
-            "url": "https://github.com/briangann"
+            "name": "TODO",
+            "url": "TODO"
         },
         "keywords": ["gauge", "panel"],
         "logos": {

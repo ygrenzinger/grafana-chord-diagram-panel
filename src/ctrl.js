@@ -8,6 +8,8 @@ import TimeSeries from 'app/core/time_series2';
 import * as d3 from './external/d3.v3.min';
 import './css/panel.css!';
 import './external/d3gauge';
+import './external/d3-queue.min';
+import renderChordDiagram from './d3_chorddiagram';
 
 const panelDefaults = {
   fontSizes: [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70],
@@ -80,13 +82,13 @@ const panelDefaults = {
   },
 };
 
-class D3GaugePanelCtrl extends MetricsPanelCtrl {
+class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
 
   constructor($scope, $injector, alertSrv) {
     super($scope, $injector);
     // merge existing settings with our defaults
     _.defaults(this.panel, panelDefaults);
-    this.panel.gaugeDivId = 'd3gauge_svg_' + this.panel.id;
+    this.panel.gaugeDivId = 'd3_chord_diagram_svg_' + this.panel.id;
     this.scoperef = $scope;
     this.alertSrvRef = alertSrv;
     this.initialized = false;
@@ -118,12 +120,6 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
     // add the relative path to the partial
     var optionsPath = thisPanelPath + 'partials/editor.options.html';
     this.addEditorTab('Options', optionsPath, 2);
-    var radialMetricsPath = thisPanelPath + 'partials/editor.radialmetrics.html';
-    this.addEditorTab('Radial Metrics', radialMetricsPath, 3);
-    var thresholdingPath = thisPanelPath + 'partials/editor.thresholding.html';
-    this.addEditorTab('Thresholding', thresholdingPath, 4);
-    var mappingsPath = thisPanelPath + 'partials/editor.mappings.html';
-    this.addEditorTab('Value Mappings', mappingsPath, 5);
   }
 
   /**
@@ -264,22 +260,32 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
     };
     this.gaugeObject = new drawGauge(svg,opt);
     this.svg = svg;
+    renderChordDiagram(this.panelContainer[0]);
   }
 
   removeValueMap(map) {
+    console.log("removeValueMap: " + JSON.stringify(map));
+    /*
     var index = _.indexOf(this.panel.valueMaps, map);
     this.panel.valueMaps.splice(index, 1);
     this.render();
+    */
   }
 
   addValueMap() {
+    console.log("addValueMap");
+    /*
     this.panel.valueMaps.push({value: '', op: '=', text: '' });
+    */
   }
 
   removeRangeMap(rangeMap) {
+    console.log("removeRangeMap: " + JSON.stringify(rangeMap));
+    /*
     var index = _.indexOf(this.panel.rangeMaps, rangeMap);
     this.panel.rangeMaps.splice(index, 1);
     this.render();
+    */
   }
 
   addRangeMap() {
@@ -318,7 +324,7 @@ class D3GaugePanelCtrl extends MetricsPanelCtrl {
 
   link(scope, elem, attrs, ctrl) {
     //console.log("d3gauge inside link");
-    ctrl.setContainer(elem.find('.grafana-d3-gauge'));
+    ctrl.setContainer(elem.find('.grafana-d3-chord-diagram'));
     // Check if there is a gauge rendered
     var renderedSVG = $('#'+this.panel.gaugeDivId);
     // console.log("link: found svg length " + renderedSVG.length);
@@ -507,8 +513,8 @@ function getColorForValue(data, value) {
   return _.first(data.colorMap);
 }
 
-D3GaugePanelCtrl.templateUrl = 'partials/template.html';
+D3ChordDiagramPanelCtrl.templateUrl = 'partials/template.html';
 export {
-	D3GaugePanelCtrl,
-	D3GaugePanelCtrl as MetricsPanelCtrl
+	D3ChordDiagramPanelCtrl,
+	D3ChordDiagramPanelCtrl as MetricsPanelCtrl
 };
