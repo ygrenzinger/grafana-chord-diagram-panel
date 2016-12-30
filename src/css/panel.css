@@ -1,37 +1,25 @@
-.label{
-	font-size:22.5px;
-	fill:#ffffff;
-	text-anchor:middle;
-	alignment-baseline:middle;
+.grafana-d3-chord-diagram-svg {
+	color: white;
+	opacity: .9;
+	background: white;
+	padding: 5px;
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+	white-space: nowrap;
+	pointer-events: none;
 }
-.face{
-	stroke:#c8c8c8;
-	stroke-width:2;
+#circle circle {
+	fill: none;
+	pointer-events: all;
 }
-.minorTicks{
-	stroke-width:2;
-	stroke:white;
+path.group {
+	fill-opacity: .8;
 }
-.majorTicks{
-	stroke:white;
-	stroke-width:3;
+path.chord {
+	fill-opacity: .8;
+	stroke: #000;
+	stroke-width: .25px;
 }
-.green text{
-	font-size:12px;
-}
-.green .majorTicks{
-	stroke-width:1;
-}
-.green .minorTicks{
-	stroke-width:.5;
-}
-.red .label{
-	fill:rgb(26,12,37);
-}
-.red .majorTicks,.red .minorTicks{
-	stroke:rgb(26,12,37);
-}
-.blue line{
-	stroke-width:6;
-	stroke-linecap:round;
+#circle:hover path.fade {
+	display: none;
 }

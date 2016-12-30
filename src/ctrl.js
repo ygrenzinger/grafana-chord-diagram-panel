@@ -88,7 +88,7 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
     super($scope, $injector);
     // merge existing settings with our defaults
     _.defaults(this.panel, panelDefaults);
-    this.panel.gaugeDivId = 'd3_chord_diagram_svg_' + this.panel.id;
+    this.panel.chordDiagramDivId = '#d3_chord_diagram_svg_' + this.panel.id;
     this.scoperef = $scope;
     this.alertSrvRef = alertSrv;
     this.initialized = false;
@@ -106,9 +106,9 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
     //console.log("D3GaugePanelCtrl constructor!");
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     this.events.on('render', this.onRender.bind(this));
-    this.events.on('data-received', this.onDataReceived.bind(this));
-    this.events.on('data-error', this.onDataError.bind(this));
-    this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
+    //this.events.on('data-received', this.onDataReceived.bind(this));
+    //this.events.on('data-error', this.onDataError.bind(this));
+    //this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
     //console.log("D3GaugePanelCtrl constructor done!");
   }
 
@@ -122,145 +122,59 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
     this.addEditorTab('Options', optionsPath, 2);
   }
 
-  /**
-   * [setContainer description]
-   * @param {[type]} container [description]
-   */
   setContainer(container) {
     this.panelContainer = container;
   }
 
   getPanelWidth() {
-    // with a full sized panel, this comes back as zero, so calculate from the div panel instead
-    //debugger;
-    var tmpPanelWidth = this.panelContainer[0].clientWidth;
-    if (tmpPanelWidth === 0) {
-      // just use the height...
-      tmpPanelWidth = this.getPanelHeight();
-      tmpPanelWidth -= 24;
-      if (tmpPanelWidth < 250) {
-        tmpPanelWidth = 250;
+    var width = this.panelContainer[0].clientWidth;
+    if (width === 0) {
+      width = this.getPanelHeight();
+      width -= 24;
+      if (width < 900) {
+        width = 900;
       }
-      return tmpPanelWidth;
-      //var tmpPanelWidthCSS = $("div.panel").css("width");
-      //var tmpPanelWidthPx = tmpPanelWidthCSS.replace("px","");
-      //tmpPanelWidth = parseInt(tmpPanelWidthPx);
     }
-    var actualWidth = tmpPanelWidth;
-    return actualWidth;
+    return width;
   }
 
   getPanelHeight() {
     // panel can have a fixed height via options
-    var tmpPanelHeight = this.$scope.ctrl.panel.height;
-    // if that is blank, try to get it from our row
-    if (typeof tmpPanelHeight === 'undefined') {
-      // get from the row instead
-      tmpPanelHeight = this.row.height;
-      // default to 250px if that was undefined also
-      if (typeof tmpPanelHeight === 'undefined') {
-        tmpPanelHeight = 250;
+    var height = this.$scope.ctrl.panel.height;
+    if (typeof height === 'undefined') {
+      // if that is blank, try to get it from our row
+      height = this.row.height;
+      if (typeof height === 'undefined') {
+        height = 900;
+      } else {
+        // convert to numeric value
+        height = parseInt(height.replace("px",""));
       }
     }
-    else {
-      // convert to numeric value
-      tmpPanelHeight = tmpPanelHeight.replace("px","");
+    if (height < 900) {
+      height = 900;
     }
-    var actualHeight = parseInt(tmpPanelHeight);
-    // grafana minimum height for a panel is 250px
-    if (actualHeight < 250) {
-      actualHeight = 250;
-    }
-    return actualHeight;
+    return height;
   }
 
   clearSVG() {
-    if ($('#'+this.panel.gaugeDivId).length) {
+    if ($(this.panel.chordDiagramDivId).length) {
       //console.log("Clearing SVG");
-      $('#'+this.panel.gaugeDivId).remove();
+      $(this.panel.chordDiagramDivId).remove();
     }
   }
+
   onRender() {
     // update the values to be sent to the gauge constructor
     this.setValues(this.data);
     //console.log("Render D3");
     this.clearSVG();
-    // use jQuery to get the height on our container
+
     this.panelWidth = this.getPanelWidth();
     this.panelHeight = this.getPanelHeight();
 
-    var margin = {top: 10, right: 0, bottom: 30, left: 0};
-    var width = this.panelWidth;
-    var height = this.panelHeight;
-    //console.log("width: " + width + " height: " + height);
-    var svg = d3.select(this.panelContainer[0])
-      .append("svg")
-      .attr("width", width + "px")
-      .attr("height", (height + 24) + "px")
-      .attr("id", this.panel.gaugeDivId)
-      .classed("svg-content-responsive", true)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    // check which is smaller, the height or the width and set the radius to be half of the lesser
-    var tmpGaugeRadius = parseFloat(this.panel.gauge.gaugeRadius);
-    // autosize if radius is set to zero
-    if (this.panel.gauge.gaugeRadius === 0) {
-      tmpGaugeRadius = this.panelHeight / 2;
-      if (this.panelWidth < this.panelHeight) {
-        tmpGaugeRadius = this.panelWidth / 2;
-      }
-      tmpGaugeRadius -= 10;
-    }
-    var opt = {
-      minVal : this.panel.gauge.minValue,
-      maxVal : this.panel.gauge.maxValue,
-      tickSpaceMinVal: this.panel.gauge.tickSpaceMinVal,
-      tickSpaceMajVal: this.panel.gauge.tickSpaceMajVal,
-      gaugeUnits: this.panel.format,
-      gaugeRadius: tmpGaugeRadius,
-      pivotRadius: this.panel.gauge.pivotRadius,
-      padding: this.panel.gauge.padding,
-      edgeWidth: this.panel.gauge.edgeWidth,
-      tickEdgeGap: this.panel.gauge.tickEdgeGap,
-      tickLengthMaj: this.panel.gauge.tickLengthMaj,
-      tickLengthMin: this.panel.gauge.tickLengthMin,
-      needleTickGap: this.panel.gauge.needleTickGap,
-      needleLengthNeg: this.panel.gauge.needleLengthNeg,
-      ticknessGaugeBasis: this.panel.gauge.ticknessGaugeBasis,
-      needleWidth: this.panel.gauge.needleWidth,
-      tickWidthMaj: this.panel.gauge.tickWidthMaj,
-      tickWidthMin: this.panel.gauge.tickWidthMin,
-      unitsLabelFontSize: this.panel.gauge.unitsLabelFontSize,
-      labelFontSize: this.panel.gauge.labelFontSize,
-      zeroTickAngle: this.panel.gauge.zeroTickAngle,
-      maxTickAngle: this.panel.gauge.maxTickAngle,
-      zeroNeedleAngle: this.panel.gauge.zeroNeedleAngle,
-      maxNeedleAngle: this.panel.gauge.maxNeedleAngle,
-      outerEdgeCol:  this.panel.gauge.outerEdgeCol,
-      innerCol:      this.panel.gauge.innerCol,
-      pivotCol:      this.panel.gauge.pivotCol,
-      needleCol:     this.panel.gauge.needleCol,
-      unitsLabelCol: this.panel.gauge.unitsLabelCol,
-      tickLabelCol:  this.panel.gauge.tickLabelCol,
-      tickColMaj:    this.panel.gauge.tickColMaj,
-      tickColMin:    this.panel.gauge.tickColMin,
-      thresholds:    this.panel.thresholds,
-      showThresholdColorOnValue: this.panel.gauge.showThresholdColorOnValue,
-      showThresholdOnGauge: this.panel.gauge.showThresholdOnGauge,
-      showLowerThresholdRange: this.panel.gauge.showLowerThresholdRange,
-      showMiddleThresholdRange: this.panel.gauge.showMiddleThresholdRange,
-      showUpperThresholdRange: this.panel.gauge.showUpperThresholdRange,
-      thresholdColors: this.panel.colors,
-      needleValText : this.getValueText(),
-      needleVal : this.getValueRounded(),
-      tickFont: this.panel.gauge.tickFont,
-      unitsFont: this.panel.gauge.unitsFont,
-      animateNeedleValueTransition: this.panel.gauge.animateNeedleValueTransition
-    };
-    this.gaugeObject = new drawGauge(svg,opt);
-    this.svg = svg;
-    renderChordDiagram(this.panelContainer[0]);
+    this.svg = renderChordDiagram(this.panelContainer[0], this.panel.chordDiagramDivId, this.panelWidth, this.panelHeight);
+    
   }
 
   removeValueMap(map) {
@@ -289,53 +203,27 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
   }
 
   addRangeMap() {
+    console.log("addRangeMap");
     this.panel.rangeMaps.push({from: '', to: '', text: ''});
-  }
-
-  validateRadialMetricValues() {
-    // make sure the spacing values are valid
-    if ((this.panel.gauge.tickSpaceMinVal === null) ||
-        (this.panel.gauge.tickSpaceMinVal === "") ||
-        (isNaN(this.panel.gauge.tickSpaceMinVal))
-      ){
-      // alert about the error, and set it to 1
-      this.panel.gauge.tickSpaceMinVal = 1;
-      this.alertSrvRef.set("Problem!", "Invalid Value for Tick Spacing Minor, auto-setting back to default of 1", 'error', 10000);
-    }
-    if ((this.panel.gauge.tickSpaceMajVal === null) ||
-        (this.panel.gauge.tickSpaceMajVal === "") ||
-        (isNaN(this.panel.gauge.tickSpaceMajVal))
-      ){
-      // alert about the error, and set it to 10
-      this.panel.gauge.tickSpaceMajVal = 10;
-      this.alertSrvRef.set("Problem!", "Invalid Value for Tick Spacing Major, auto-setting back to default of 10", 'error', 10000);
-    }
-    if ((this.panel.gauge.gaugeRadius === null) ||
-        (this.panel.gauge.gaugeRadius === "") ||
-        (isNaN(this.panel.gauge.gaugeRadius) ||
-        (this.panel.gauge.gaugeRadius < 0))
-      ){
-      // alert about the error, and set it to 0
-      this.panel.gauge.gaugeRadius = 0;
-      this.alertSrvRef.set("Problem!", "Invalid Value for Gauge Radius, auto-setting back to default of 0", 'error', 10000);
-    }
-    this.render();
   }
 
   link(scope, elem, attrs, ctrl) {
     //console.log("d3gauge inside link");
     ctrl.setContainer(elem.find('.grafana-d3-chord-diagram'));
-    // Check if there is a gauge rendered
-    var renderedSVG = $('#'+this.panel.gaugeDivId);
+    // Check if there is a diagram rendered
+    var renderedSVG = $(this.panel.chordDiagramDivId);
     // console.log("link: found svg length " + renderedSVG.length);
     if (renderedSVG.length === 0) {
-      // no gauge found, force a render
+      // no diagram found, force a render
       this.render();
     }
   }
 
 
   getDecimalsForValue(value) {
+    console.log("getDecimalsForValue: " + value);
+
+    /*
     if (_.isNumber(this.panel.decimals)) {
       return {decimals: this.panel.decimals, scaledDecimals: null};
     }
@@ -371,6 +259,9 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
     result.decimals = Math.max(0, dec);
     result.scaledDecimals = result.decimals - Math.floor(Math.log(size) / Math.LN10) + 2;
     return result;
+    */
+
+    return {};
   }
 
   setValues(data) {
@@ -458,18 +349,14 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
       data.valueFormatted = "no value";
     }
   }
-
-  getValueText() {
-    return this.data.valueFormatted;
-  }
-
-  getValueRounded() {
-    return this.data.valueRounded;
-  }
+  
 
   setUnitFormat(subItem) {
+    console.log('setUnitFormat: ' + JSON.stringify(subItem));
+    /*
     this.panel.format = subItem.value;
     this.render();
+    */
   }
 
   onDataError(err) {
@@ -481,10 +368,7 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
     var data = {};
     this.setValues(data);
     this.data = data;
-    //console.log("Data value: " + data.value + " formatted: " + data.valueFormatted + " rounded: " + data.valueRounded );
-    //var fmtTxt = kbn.valueFormats[this.panel.format];
-    //console.log("Format: " + fmtTxt);
-    this.gaugeObject.updateGauge(data.value, data.valueFormatted, data.valueRounded);
+    //should update Chord Diagram
   }
 
   seriesHandler(seriesData) {
@@ -495,22 +379,6 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
     series.flotpairs = series.getFlotPairs(this.panel.nullPointMode);
     return series;
   }
-
-  invertColorOrder() {
-    var tmp = this.panel.colors[0];
-    this.panel.colors[0] = this.panel.colors[2];
-    this.panel.colors[2] = tmp;
-    this.render();
-  }
-}
-
-function getColorForValue(data, value) {
-  for (var i = data.thresholds.length; i > 0; i--) {
-    if (value >= data.thresholds[i-1]) {
-      return data.colorMap[i];
-    }
-  }
-  return _.first(data.colorMap);
 }
 
 D3ChordDiagramPanelCtrl.templateUrl = 'partials/template.html';
