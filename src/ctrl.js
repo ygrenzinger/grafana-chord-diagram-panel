@@ -9,7 +9,7 @@ import * as d3 from './external/d3.v3.min';
 import './css/panel.css!';
 import './external/d3gauge';
 import './external/d3-queue.min';
-import renderChordDiagram from './d3_chorddiagram';
+import renderChordDiagram from './chordDiagramRenderer';
 
 const panelDefaults = {
   fontSizes: [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70],
@@ -37,49 +37,7 @@ const panelDefaults = {
   colors: ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
   decimals: 2, // decimal precision
   format: 'none', // unit format
-  operatorName: 'avg', // operator applied to time series
-  gauge: {
-    minValue: 0,
-    maxValue: 100,
-    tickSpaceMinVal: 1,
-    tickSpaceMajVal: 10,
-    gaugeUnits: '', // no units by default, this will be selected by user
-    gaugeRadius: 0, // 0 for auto-scale
-    pivotRadius: 0.1,
-    padding: 0.05,
-    edgeWidth: 0.05,
-    tickEdgeGap: 0.05,
-    tickLengthMaj: 0.15,
-    tickLengthMin: 0.05,
-    needleTickGap: 0.05,
-    needleLengthNeg: 0.2,
-    ticknessGaugeBasis: 200,
-    needleWidth: 5,
-    tickWidthMaj: 5,
-    tickWidthMin: 1,
-    unitsLabelFontSize: 22,
-    labelFontSize: 18,
-    zeroTickAngle: 60,
-    maxTickAngle: 300,
-    zeroNeedleAngle: 40,
-    maxNeedleAngle: 320,
-    outerEdgeCol:  '#0099CC',
-    innerCol:      '#fff',
-    pivotCol:      '#999',
-    needleCol:     '#0099CC',
-    unitsLabelCol: '#000',
-    tickLabelCol:  '#000',
-    tickColMaj:    '#0099CC',
-    tickColMin:    '#000',
-    tickFont: 'Open Sans',
-    unitsFont: 'Open Sans',
-    showThresholdOnGauge: false,
-    showThresholdColorOnValue: false,
-    showLowerThresholdRange: false,
-    showMiddleThresholdRange: true,
-    showUpperThresholdRange: true,
-    animateNeedleValueTransition: true,
-  },
+  operatorName: 'avg' // operator applied to time series
 };
 
 class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
@@ -96,7 +54,7 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
     this.svg = null;
     this.panelWidth = null;
     this.panelHeight = null;
-    this.gaugeObject = null;
+    this.chordDiagram = null;
     this.data = {
       value: 0,
       valueFormatted: 0,

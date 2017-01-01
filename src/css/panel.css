@@ -1,10 +1,13 @@
-.grafana-d3-chord-diagram-svg {
+.grafana-d3-chord-diagram-tooltip {
 	color: white;
 	opacity: .9;
-	background: white;
+	background: #333;
 	padding: 5px;
 	border: 1px solid lightgrey;
 	border-radius: 5px;
+	position: absolute;
+	z-index: 10;
+	visibility: hidden;
 	white-space: nowrap;
 	pointer-events: none;
 }

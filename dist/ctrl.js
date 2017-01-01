@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'app/core/config', 'app/core/time_series2', './external/d3.v3.min', './css/panel.css!', './external/d3gauge', './external/d3-queue.min', './d3_chorddiagram'], function (_export, _context) {
+System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'app/core/config', 'app/core/time_series2', './external/d3.v3.min', './css/panel.css!', './external/d3gauge', './external/d3-queue.min', './chordDiagramRenderer'], function (_export, _context) {
   "use strict";
 
   var MetricsPanelCtrl, _, $, kbn, config, TimeSeries, d3, renderChordDiagram, _createClass, panelDefaults, D3ChordDiagramPanelCtrl;
@@ -50,8 +50,8 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
       TimeSeries = _appCoreTime_series.default;
     }, function (_externalD3V3Min) {
       d3 = _externalD3V3Min;
-    }, function (_cssPanelCss) {}, function (_externalD3gauge) {}, function (_externalD3QueueMin) {}, function (_d3_chorddiagram) {
-      renderChordDiagram = _d3_chorddiagram.default;
+    }, function (_cssPanelCss) {}, function (_externalD3gauge) {}, function (_externalD3QueueMin) {}, function (_chordDiagramRenderer) {
+      renderChordDiagram = _chordDiagramRenderer.default;
     }],
     execute: function () {
       _createClass = function () {
@@ -85,49 +85,7 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
         colors: ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
         decimals: 2, // decimal precision
         format: 'none', // unit format
-        operatorName: 'avg', // operator applied to time series
-        gauge: {
-          minValue: 0,
-          maxValue: 100,
-          tickSpaceMinVal: 1,
-          tickSpaceMajVal: 10,
-          gaugeUnits: '', // no units by default, this will be selected by user
-          gaugeRadius: 0, // 0 for auto-scale
-          pivotRadius: 0.1,
-          padding: 0.05,
-          edgeWidth: 0.05,
-          tickEdgeGap: 0.05,
-          tickLengthMaj: 0.15,
-          tickLengthMin: 0.05,
-          needleTickGap: 0.05,
-          needleLengthNeg: 0.2,
-          ticknessGaugeBasis: 200,
-          needleWidth: 5,
-          tickWidthMaj: 5,
-          tickWidthMin: 1,
-          unitsLabelFontSize: 22,
-          labelFontSize: 18,
-          zeroTickAngle: 60,
-          maxTickAngle: 300,
-          zeroNeedleAngle: 40,
-          maxNeedleAngle: 320,
-          outerEdgeCol: '#0099CC',
-          innerCol: '#fff',
-          pivotCol: '#999',
-          needleCol: '#0099CC',
-          unitsLabelCol: '#000',
-          tickLabelCol: '#000',
-          tickColMaj: '#0099CC',
-          tickColMin: '#000',
-          tickFont: 'Open Sans',
-          unitsFont: 'Open Sans',
-          showThresholdOnGauge: false,
-          showThresholdColorOnValue: false,
-          showLowerThresholdRange: false,
-          showMiddleThresholdRange: true,
-          showUpperThresholdRange: true,
-          animateNeedleValueTransition: true
-        }
+        operatorName: 'avg' // operator applied to time series
       };
 
       _export('MetricsPanelCtrl', _export('D3ChordDiagramPanelCtrl', D3ChordDiagramPanelCtrl = function (_MetricsPanelCtrl) {
@@ -148,7 +106,7 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
           _this.svg = null;
           _this.panelWidth = null;
           _this.panelHeight = null;
-          _this.gaugeObject = null;
+          _this.chordDiagram = null;
           _this.data = {
             value: 0,
             valueFormatted: 0,
