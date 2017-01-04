@@ -89,8 +89,8 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
     if (width === 0) {
       width = this.getPanelHeight();
       width -= 24;
-      if (width < 900) {
-        width = 900;
+      if (width < 600) {
+        width = 600;
       }
     }
     return width;
@@ -103,14 +103,14 @@ class D3ChordDiagramPanelCtrl extends MetricsPanelCtrl {
       // if that is blank, try to get it from our row
       height = this.row.height;
       if (typeof height === 'undefined') {
-        height = 900;
+        height = 600;
       } else {
         // convert to numeric value
         height = parseInt(height.replace("px",""));
       }
     }
-    if (height < 900) {
-      height = 900;
+    if (height < 600) {
+      height = 600;
     }
     return height;
   }
