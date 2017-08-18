@@ -1,3 +1,8 @@
+Inspirations are:
+https://github.com/sghall/d3-chord-diagrams
+https://github.com/grafana/piechart-panel
+
+
 # Grafana Gauge Panel
 
 This panel plugin provides a [D3-based](http://www.d3js.org) gauge panel for [Grafana](http://www.grafana.org) 3.x
